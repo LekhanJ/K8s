@@ -1,0 +1,19 @@
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: my-job
+  namespace: my-namespace
+spec:
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      name: my-job-pod
+      labels:
+        app: my-job
+    spec:
+      containers:
+      - name: job-container
+        image: busybox:latest
+        command: ["sh", "-c", "echo Hello World! && sleep 10"]
+      restartPolicy: Never
