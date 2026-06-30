@@ -1,0 +1,46 @@
+kind: CronJob
+apiVersion: batch/v1
+metadata:
+  name: my-cron
+  namespace: my-namespace
+
+spec:                                    # CronJob spec
+  schedule: "* * * * *"
+
+  jobTemplate:
+    spec:                                # Job spec
+      template:
+        metadata:
+          name: my-cron-job
+          labels:
+            app: my-cron-job
+      
+        spec:                            # Pod spec
+          containers:
+          - name: my-container
+            image: busybox:latest
+            command:
+              - sh
+              - -c
+              - >
+                echo "Backup Started";
+                mkdir -p /backups &&
+                mkdir -p /demo-data &&
+                cp -r /demo-data /backups &&
+                echo "Backup Completed" ;
+            volumeMounts:
+              - name: data-volume
+                mountPath: /demo-data
+              - name: backup-volume
+                mountPath: /backups
+
+          restartPolicy: OnFailure
+          volumes:
+              - name: data-volume
+                hostPath: 
+                  path: /demo-data
+                  type: DirectoryOrCreate
+              - name: backup-volume
+                hostPath: 
+                  path: /backups
+                  type: DirectoryOrCreate 
