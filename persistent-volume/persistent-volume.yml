@@ -2,6 +2,7 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   name: my-pv
+  namespace: my-namespace
   labels:
     app: my-pv
 
